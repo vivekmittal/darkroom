@@ -5,7 +5,6 @@ all: test-ci
 
 setup:
 	go get golang.org/x/lint/golint
-	go get github.com/mattn/goveralls
 
 compile:
 	mkdir -p out
@@ -23,9 +22,6 @@ vet:
 test:
 	go test ./... -covermode=count -coverprofile=profile.cov
 
-coverage:
-	goveralls -coverprofile=profile.cov -service=travis-ci
-
 copy-config:
 	cp config.example.yaml config.yaml
 
@@ -35,4 +31,4 @@ docker-image:
 docker-docs:
 	docker build -t darkroom-docs:latest -f build/Dockerfile.docs .
 
-test-ci: copy-config compile lint format vet test coverage
+test-ci: copy-config compile lint format vet test
