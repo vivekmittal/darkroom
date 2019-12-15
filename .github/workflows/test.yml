@@ -24,3 +24,8 @@ jobs:
         make test-ci
       env:
         GO111MODULE: on
+    - name: Send coverage
+      uses: shogo82148/actions-goveralls@v1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        path-to-profile: profile.cov
