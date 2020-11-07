@@ -3,6 +3,7 @@ package s3
 import (
 	"context"
 	"fmt"
+	"github.com/gojek/darkroom/pkg/logger"
 	"io/ioutil"
 	"net/http"
 
@@ -105,6 +106,11 @@ func (s *Storage) newMetadata(output s3.GetObjectOutput) *storage.ResponseMetada
 		ContentType:   aws.StringValue(output.ContentType),
 		ETag:          aws.StringValue(output.ETag),
 	}
+
+	logger.Errorf("AWS Parameters ContentType: %s", output.ContentType)
+	logger.Errorf("AWS Parameters Accept Ranges: %s", output.AcceptRanges)
+
+	fmt.Println(output.ContentType)
 
 	if output.LastModified != nil {
 		metadata.LastModified = aws.TimeValue(output.LastModified).Format(http.TimeFormat)
