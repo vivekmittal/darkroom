@@ -6,6 +6,7 @@ import (
 
 	"github.com/afex/hystrix-go/hystrix"
 	"github.com/gojek/darkroom/pkg/storage"
+	newrelic "github.com/newrelic/go-agent"
 )
 
 type config struct {
@@ -17,6 +18,7 @@ type config struct {
 	defaultParams                   string
 	metricsSystem                   string
 	statsdConfig                    StatsdCollectorConfig
+	newrelicConfig                  newrelic.Config
 }
 
 var instance *config
@@ -61,6 +63,7 @@ func newConfig() *config {
 		defaultParams:                   v.GetString("defaultParams"),
 		metricsSystem:                   v.GetString("metrics.system"),
 		statsdConfig:                    c,
+		newrelicConfig:                  readNewRelicConfig(),
 	}
 }
 
@@ -107,4 +110,9 @@ func MetricsSystem() string {
 // StatsdConfig returns the config for statsd client initialization in dependencies from the environment
 func StatsdConfig() *StatsdCollectorConfig {
 	return &getConfig().statsdConfig
+}
+
+// NewrelicConfig returns the config for newrelic
+func NewrelicConfig() newrelic.Config {
+	return getConfig().newrelicConfig
 }
