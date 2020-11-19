@@ -13,6 +13,7 @@ require (
 	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
 	github.com/gorilla/mux v1.7.3
 	github.com/magiconair/properties v1.8.1 // indirect
+	github.com/newrelic/go-agent v3.9.0+incompatible
 	github.com/pelletier/go-toml v1.4.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/prometheus/client_golang v1.7.1

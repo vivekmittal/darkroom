@@ -30,3 +30,8 @@ cache:
   time: 31536000    # One year
 
 enableConcurrentImageProcessing: true
+
+newrelic:
+  enabled: false
+  appName: "darkroom"
+  license: "eu01xxf0b661e019e030a14ca63e50bf12345678"

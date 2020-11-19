@@ -11,8 +11,10 @@ import (
 
 	"github.com/gojek/darkroom/internal/handler"
 	"github.com/gojek/darkroom/pkg/config"
+	"github.com/gojek/darkroom/pkg/metrics"
 	"github.com/gojek/darkroom/pkg/service"
 	"github.com/gorilla/mux"
+	"github.com/newrelic/go-agent/_integrations/nrgorilla/v1"
 )
 
 // NewRouter takes in handler Dependencies and returns mux.Router with default routes
@@ -37,7 +39,7 @@ func NewRouter(deps *service.Dependencies, registry *prometheus.Registry) *mux.R
 		r.Methods(http.MethodGet).PathPrefix("/").Handler(handler.ImageHandler(deps))
 	}
 
-	return r
+	return nrgorilla.InstrumentRoutes(r, metrics.NewrelicApp())
 }
 
 func setDebugRoutes(r *mux.Router) {
