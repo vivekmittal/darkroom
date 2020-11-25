@@ -53,10 +53,6 @@ func (s *Storage) Get(ctx context.Context, path string) storage.IResponse {
 // GetPartially takes in the Context, path and opt as an argument and returns an IResponse interface implementation.
 // This method figures out how to get partial data from the S3 storage backend.
 func (s *Storage) GetPartially(ctx context.Context, path string, opt *storage.GetPartiallyRequestOptions) storage.IResponse {
-	if opt == nil || len(opt.Range) == 0 {
-		return s.Get(ctx, path)
-	}
-
 	input := s3.GetObjectInput{
 		Bucket: aws.String(s.bucketName),
 		Key:    aws.String(path),

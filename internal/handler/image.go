@@ -2,7 +2,9 @@ package handler
 
 import (
 	"fmt"
+	"github.com/gojek/darkroom/pkg/storage"
 	"net/http"
+	"strings"
 
 	"github.com/gojek/darkroom/pkg/config"
 	"github.com/gojek/darkroom/pkg/logger"
@@ -27,7 +29,7 @@ const (
 func ImageHandler(deps *service.Dependencies) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		l := logger.SugaredWithRequest(r)
-		res := deps.Storage.Get(r.Context(), r.URL.Path)
+		res := deps.Storage.GetPartially(r.Context(), r.URL.Path, &storage.GetPartiallyRequestOptions{})
 		if res.Error() != nil {
 			l.Errorf("error from Storage.Get: %s", res.Error())
 			deps.MetricService.CountImageHandlerErrors(StorageGetErrorKey)
@@ -35,12 +37,12 @@ func ImageHandler(deps *service.Dependencies) http.HandlerFunc {
 			return
 		}
 		var data []byte
-		var err error
 		data = res.Data()
 
 		params := make(map[string]string)
 		values := r.URL.Query()
-		if len(values) > 0 || deps.Manipulator.HasDefaultParams() {
+		if (len(values) > 0 || deps.Manipulator.HasDefaultParams()) && !strings.Contains(res.Metadata().ContentType, "video") {
+			var err error
 			for v := range values {
 				if len(values.Get(v)) != 0 {
 					params[v] = values.Get(v)
