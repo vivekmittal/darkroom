@@ -14,7 +14,7 @@ import (
 	"github.com/gojek/darkroom/pkg/metrics"
 	"github.com/gojek/darkroom/pkg/service"
 	"github.com/gorilla/mux"
-	"github.com/newrelic/go-agent/_integrations/nrgorilla/v1"
+	"github.com/newrelic/go-agent/v3/integrations/nrgorilla"
 )
 
 // NewRouter takes in handler Dependencies and returns mux.Router with default routes
@@ -22,6 +22,7 @@ import (
 // It also, adds a PathPrefix to catch all route if config.DataSource().PathPrefix is set
 func NewRouter(deps *service.Dependencies, registry *prometheus.Registry) *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
+	r.Use(nrgorilla.Middleware(metrics.NewrelicApp()))
 
 	r.Methods(http.MethodGet).Path("/ping").Handler(handler.Ping())
 
@@ -39,7 +40,7 @@ func NewRouter(deps *service.Dependencies, registry *prometheus.Registry) *mux.R
 		r.Methods(http.MethodGet).PathPrefix("/").Handler(handler.ImageHandler(deps))
 	}
 
-	return nrgorilla.InstrumentRoutes(r, metrics.NewrelicApp())
+	return r
 }
 
 func setDebugRoutes(r *mux.Router) {

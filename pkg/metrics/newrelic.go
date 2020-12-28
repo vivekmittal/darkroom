@@ -2,11 +2,14 @@ package metrics
 
 import (
 	"github.com/gojek/darkroom/pkg/config"
-	newrelic "github.com/newrelic/go-agent"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
-func NewrelicApp() newrelic.Application {
-	newRelicApp, err := newrelic.NewApplication(config.NewrelicConfig())
+func NewrelicApp() *newrelic.Application {
+	newRelicApp, err := newrelic.NewApplication(
+		newrelic.ConfigAppName(config.NewrelicConfig().AppName),
+		newrelic.ConfigEnabled(config.NewrelicConfig().Enabled),
+		newrelic.ConfigLicense(config.NewrelicConfig().License))
 	if err != nil {
 		panic(err)
 	}

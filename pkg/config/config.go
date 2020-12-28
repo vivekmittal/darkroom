@@ -6,7 +6,7 @@ import (
 
 	"github.com/afex/hystrix-go/hystrix"
 	"github.com/gojek/darkroom/pkg/storage"
-	newrelic "github.com/newrelic/go-agent"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 type config struct {

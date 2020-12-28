@@ -1,7 +1,7 @@
 package config
 
 import (
-	newrelic "github.com/newrelic/go-agent"
+	"github.com/newrelic/go-agent/v3/newrelic"
 )
 
 func readNewRelicConfig() newrelic.Config {
