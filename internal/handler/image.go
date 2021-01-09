@@ -2,13 +2,12 @@ package handler
 
 import (
 	"fmt"
-	"github.com/gojek/darkroom/pkg/storage"
-	"net/http"
-	"strings"
-
 	"github.com/gojek/darkroom/pkg/config"
 	"github.com/gojek/darkroom/pkg/logger"
 	"github.com/gojek/darkroom/pkg/service"
+	"github.com/gojek/darkroom/pkg/storage"
+	"image"
+	"net/http"
 )
 
 const (
@@ -41,7 +40,7 @@ func ImageHandler(deps *service.Dependencies) http.HandlerFunc {
 
 		params := make(map[string]string)
 		values := r.URL.Query()
-		if (len(values) > 0 || deps.Manipulator.HasDefaultParams()) && !strings.Contains(res.Metadata().ContentType, "video") {
+		if len(values) > 0 || deps.Manipulator.HasDefaultParams() {
 			var err error
 			for v := range values {
 				if len(values.Get(v)) != 0 {
@@ -49,6 +48,13 @@ func ImageHandler(deps *service.Dependencies) http.HandlerFunc {
 				}
 			}
 			data, err = deps.Manipulator.Process(service.NewSpecBuilder().WithImageData(data).WithParams(params).Build())
+
+			if err == image.ErrFormat {
+				deps.MetricService.CountImageHandlerErrors(ProcessorErrorKey)
+				writeResponse(w, res.Data())
+				return
+			}
+
 			if err != nil {
 				l.Errorf("error from Manipulator.Process: %s", err)
 				deps.MetricService.CountImageHandlerErrors(ProcessorErrorKey)
@@ -57,11 +63,15 @@ func ImageHandler(deps *service.Dependencies) http.HandlerFunc {
 			}
 		}
 
-		w.Header().Set(CacheControlHeader, fmt.Sprintf("public,max-age=%d", config.CacheTime()))
-		// Ref to Google CDN we support: https://cloud.google.com/cdn/docs/caching#cacheability
-		w.Header().Set(VaryHeader, "Accept")
-
-		cl, _ := w.Write(data)
-		w.Header().Set(ContentLengthHeader, fmt.Sprintf("%d", cl))
+		writeResponse(w, data)
 	}
+}
+
+func writeResponse(w http.ResponseWriter, data []byte) {
+	w.Header().Set(CacheControlHeader, fmt.Sprintf("public,max-age=%d", config.CacheTime()))
+	// Ref to Google CDN we support: https://cloud.google.com/cdn/docs/caching#cacheability
+	w.Header().Set(VaryHeader, "Accept")
+
+	cl, _ := w.Write(data)
+	w.Header().Set(ContentLengthHeader, fmt.Sprintf("%d", cl))
 }
