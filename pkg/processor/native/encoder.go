@@ -15,15 +15,20 @@ const (
 	MegaBytes = 1024 * KiloBytes
 )
 
-var JPEGCompressionQualityMap = map[int]int{
-	50 * KiloBytes:   100,
-	100 * KiloBytes:  90,
-	500 * KiloBytes:  75,
-	2 * MegaBytes:    75,
-	5 * MegaBytes:    75,
-	10 * MegaBytes:   50,
-	100 * MegaBytes:  15,
-	1000 * MegaBytes: 5,
+type compressionConfig struct {
+	sizeLevel int
+	quality   int
+}
+
+var compressionConfigs = []compressionConfig{
+	{sizeLevel: 50 * KiloBytes, quality: 100},
+	{sizeLevel: 100 * KiloBytes, quality: 90},
+	{sizeLevel: 500 * KiloBytes, quality: 75},
+	{sizeLevel: 2 * MegaBytes, quality: 50},
+	{sizeLevel: 5 * MegaBytes, quality: 40},
+	{sizeLevel: 10 * MegaBytes, quality: 25},
+	{sizeLevel: 100 * MegaBytes, quality: 15},
+	{sizeLevel: 1000 * MegaBytes, quality: 5},
 }
 
 // Encoder is an interface to Encode image and return the encoded byte array or error
@@ -70,9 +75,9 @@ func (e *JpegEncoder) EncodeWithSize(img image.Image, size int) ([]byte, error) 
 	buff := &bytes.Buffer{}
 
 	quality := e.Option.Quality
-	for sizeLevel, q := range JPEGCompressionQualityMap {
-		if size < sizeLevel {
-			quality = q
+	for _, c := range compressionConfigs {
+		if size <= c.sizeLevel {
+			quality = c.quality
 			break
 		}
 	}
