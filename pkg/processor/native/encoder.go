@@ -17,12 +17,13 @@ const (
 
 var JPEGCompressionQualityMap = map[int]int{
 	50 * KiloBytes:   100,
-	100 * KiloBytes:  75,
-	500 * KiloBytes:  50,
-	2 * MegaBytes:    25,
-	10 * MegaBytes:   15,
-	100 * MegaBytes:  5,
-	1000 * MegaBytes: 1,
+	100 * KiloBytes:  90,
+	500 * KiloBytes:  75,
+	2 * MegaBytes:    50,
+	5 * MegaBytes:    40,
+	10 * MegaBytes:   25,
+	100 * MegaBytes:  15,
+	1000 * MegaBytes: 5,
 }
 
 // Encoder is an interface to Encode image and return the encoded byte array or error
