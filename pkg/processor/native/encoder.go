@@ -15,12 +15,10 @@ const (
 	MegaBytes = 1024 * KiloBytes
 )
 
-type compressionConfig struct {
+var compressionConfigs = []struct {
 	sizeLevel int
 	quality   int
-}
-
-var compressionConfigs = []compressionConfig{
+}{
 	{sizeLevel: 50 * KiloBytes, quality: 100},
 	{sizeLevel: 100 * KiloBytes, quality: 90},
 	{sizeLevel: 500 * KiloBytes, quality: 75},
