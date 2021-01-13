@@ -108,7 +108,7 @@ func WithWebPEncoder(webPEncoder *WebPEncoder) EncodersOption {
 // NewEncoders creates a new Encoders, if called without parameter (builder), all encoders option will be default
 func NewEncoders(opts ...EncodersOption) *Encoders {
 	e := &Encoders{
-		jpegEncoder: &JpegEncoder{Option: &jpeg.Options{Quality: jpeg.DefaultQuality}},
+		jpegEncoder: &JpegEncoder{Option: &jpeg.Options{Quality: 50}},
 		pngEncoder: &PngEncoder{
 			Encoder: &png.Encoder{CompressionLevel: png.BestCompression},
 		},
