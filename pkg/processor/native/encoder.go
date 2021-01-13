@@ -19,9 +19,9 @@ var JPEGCompressionQualityMap = map[int]int{
 	50 * KiloBytes:   100,
 	100 * KiloBytes:  90,
 	500 * KiloBytes:  75,
-	2 * MegaBytes:    50,
-	5 * MegaBytes:    40,
-	10 * MegaBytes:   25,
+	2 * MegaBytes:    75,
+	5 * MegaBytes:    75,
+	10 * MegaBytes:   50,
 	100 * MegaBytes:  15,
 	1000 * MegaBytes: 5,
 }
