@@ -3,17 +3,32 @@ package native
 import (
 	"bytes"
 	"errors"
+	"github.com/chai2010/webp"
+	"github.com/gojek/darkroom/pkg/processor"
 	"image"
 	"image/jpeg"
 	"image/png"
-
-	"github.com/chai2010/webp"
-	"github.com/gojek/darkroom/pkg/processor"
 )
+
+const (
+	KiloBytes = 1024
+	MegaBytes = 1024 * KiloBytes
+)
+
+var JPEGCompressionQualityMap = map[int]int{
+	50 * KiloBytes:   100,
+	100 * KiloBytes:  75,
+	500 * KiloBytes:  50,
+	2 * MegaBytes:    25,
+	10 * MegaBytes:   15,
+	100 * MegaBytes:  5,
+	1000 * MegaBytes: 1,
+}
 
 // Encoder is an interface to Encode image and return the encoded byte array or error
 type Encoder interface {
 	Encode(img image.Image) ([]byte, error)
+	EncodeWithSize(img image.Image, size int) ([]byte, error)
 }
 
 // JpegEncoder is an object to encode image to byte array with jpeg format
@@ -40,9 +55,28 @@ func (e *PngEncoder) Encode(img image.Image) ([]byte, error) {
 	return buff.Bytes(), err
 }
 
+func (e *PngEncoder) EncodeWithSize(img image.Image, size int) ([]byte, error) {
+	return e.Encode(img)
+}
+
 func (e *JpegEncoder) Encode(img image.Image) ([]byte, error) {
 	buff := &bytes.Buffer{}
 	err := jpeg.Encode(buff, img, e.Option)
+	return buff.Bytes(), err
+}
+
+func (e *JpegEncoder) EncodeWithSize(img image.Image, size int) ([]byte, error) {
+	buff := &bytes.Buffer{}
+
+	quality := e.Option.Quality
+	for sizeLevel, q := range JPEGCompressionQualityMap {
+		if size < sizeLevel {
+			quality = q
+			break
+		}
+	}
+
+	err := jpeg.Encode(buff, img, &jpeg.Options{Quality: quality})
 	return buff.Bytes(), err
 }
 
@@ -52,7 +86,15 @@ func (e *WebPEncoder) Encode(img image.Image) ([]byte, error) {
 	return buff.Bytes(), err
 }
 
+func (e *WebPEncoder) EncodeWithSize(img image.Image, size int) ([]byte, error) {
+	return e.Encode(img)
+}
+
 func (e *NopEncoder) Encode(img image.Image) ([]byte, error) {
+	return nil, errors.New("unknown format: failed to encode image")
+}
+
+func (e *NopEncoder) EncodeWithSize(img image.Image, size int) ([]byte, error) {
 	return nil, errors.New("unknown format: failed to encode image")
 }
 
@@ -108,7 +150,7 @@ func WithWebPEncoder(webPEncoder *WebPEncoder) EncodersOption {
 // NewEncoders creates a new Encoders, if called without parameter (builder), all encoders option will be default
 func NewEncoders(opts ...EncodersOption) *Encoders {
 	e := &Encoders{
-		jpegEncoder: &JpegEncoder{Option: &jpeg.Options{Quality: 50}},
+		jpegEncoder: &JpegEncoder{Option: &jpeg.Options{Quality: jpeg.DefaultQuality}},
 		pngEncoder: &PngEncoder{
 			Encoder: &png.Encoder{CompressionLevel: png.BestCompression},
 		},

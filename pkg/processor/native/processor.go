@@ -112,6 +112,12 @@ func (bp *BildProcessor) Encode(img image.Image, fmt string) ([]byte, error) {
 	return data, err
 }
 
+func (bp *BildProcessor) EncodeWithSize(img image.Image, fmt string, size int) ([]byte, error) {
+	enc := bp.encoders.GetEncoder(img, fmt)
+	data, err := enc.EncodeWithSize(img, size)
+	return data, err
+}
+
 // FixOrientation takes an image and it's EXIF orientation
 // To get the orientation of the image see GetOrientation (exif.go)
 func (bp *BildProcessor) FixOrientation(img image.Image, orientation int) image.Image {

@@ -122,7 +122,7 @@ func (m *manipulator) Process(spec processSpec) ([]byte, error) {
 	}
 
 	t = time.Now()
-	src, err := m.processor.Encode(data, f)
+	src, err := m.processor.EncodeWithSize(data, f, len(spec.ImageData))
 	if err == nil {
 		m.metricService.TrackDuration(encodeDurationKey, t, spec.ImageData)
 	}

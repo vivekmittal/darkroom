@@ -75,7 +75,7 @@ func TestManipulator_Process(t *testing.T) {
 	ms = &metrics.MockMetricService{}
 	m = NewManipulator(mp, nil, ms)
 	mp.On("Decode", input).Return(decoded, "png", nil)
-	mp.On("Encode", decoded, "png").Return(input, nil)
+	mp.On("EncodeWithSize", decoded, "png", len(input)).Return(input, nil)
 	mp.On("Crop", decoded, 100, 100, processor.PointCenter).Return(decoded, nil)
 	ms.On("TrackDuration", mock.Anything, mock.Anything, mock.Anything)
 	params[fit] = crop
@@ -246,6 +246,15 @@ func (m *mockProcessor) Decode(data []byte) (image.Image, string, error) {
 
 func (m *mockProcessor) Encode(img image.Image, format string) ([]byte, error) {
 	args := m.Called(img, format)
+	b := args.Get(0).([]byte)
+	if args.Get(1) == nil {
+		return b, nil
+	}
+	return b, args.Get(1).(error)
+}
+
+func (m *mockProcessor) EncodeWithSize(img image.Image, format string, size int) ([]byte, error) {
+	args := m.Called(img, format, size)
 	b := args.Get(0).([]byte)
 	if args.Get(1) == nil {
 		return b, nil

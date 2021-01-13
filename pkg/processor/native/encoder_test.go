@@ -23,6 +23,7 @@ type EncoderSuite struct {
 	transparentImage image.Image
 }
 
+// TODO: Add spec for JPEG Compression Levels
 func (s *EncoderSuite) SetupSuite() {
 	s.encoders = NewEncoders()
 
