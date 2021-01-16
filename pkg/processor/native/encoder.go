@@ -21,10 +21,12 @@ var compressionConfigs = []struct {
 }{
 	{sizeLevel: 50 * KiloBytes, quality: 100},
 	{sizeLevel: 100 * KiloBytes, quality: 90},
-	{sizeLevel: 500 * KiloBytes, quality: 75},
-	{sizeLevel: 2 * MegaBytes, quality: 50},
-	{sizeLevel: 5 * MegaBytes, quality: 40},
-	{sizeLevel: 10 * MegaBytes, quality: 25},
+	{sizeLevel: 200 * KiloBytes, quality: 75},
+	{sizeLevel: 500 * KiloBytes, quality: 60},
+	{sizeLevel: 1 * MegaBytes, quality: 50},
+	{sizeLevel: 2 * MegaBytes, quality: 40},
+	{sizeLevel: 5 * MegaBytes, quality: 30},
+	{sizeLevel: 10 * MegaBytes, quality: 20},
 	{sizeLevel: 100 * MegaBytes, quality: 15},
 	{sizeLevel: 1000 * MegaBytes, quality: 5},
 }
