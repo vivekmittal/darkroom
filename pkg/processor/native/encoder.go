@@ -19,8 +19,8 @@ var compressionConfigs = []struct {
 	sizeLevel int
 	quality   int
 }{
-	{sizeLevel: 1 * MegaBytes, quality: 100},
-	{sizeLevel: 2 * MegaBytes, quality: 90},
+	{sizeLevel: 500 * KiloBytes, quality: 100},
+	{sizeLevel: 1 * MegaBytes, quality: 90},
 	{sizeLevel: 5 * MegaBytes, quality: 75},
 	{sizeLevel: 10 * MegaBytes, quality: 50},
 	{sizeLevel: 100 * MegaBytes, quality: 40},
