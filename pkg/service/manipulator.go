@@ -60,9 +60,15 @@ type manipulator struct {
 func (m *manipulator) Process(spec processSpec) ([]byte, error) {
 	params := spec.Params
 	params = joinParams(params, m.defaultParams)
+
 	var err error
 	t := time.Now()
 	data, f, err := m.processor.Decode(spec.ImageData)
+
+	if data.Bounds().Dx() > 800 {
+		params = joinParams(params, map[string]string{"w": "800"})
+	}
+
 	if err != nil {
 		return nil, err
 	}
