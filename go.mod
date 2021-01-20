@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/DataDog/datadog-go v2.2.0+incompatible // indirect
 	github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5
-	github.com/anthonynsimon/bild v0.10.1-0.20190710205720-eee9188e4370
+	github.com/anthonynsimon/bild v0.13.0
 	github.com/aws/aws-sdk-go v1.20.19
 	github.com/cactus/go-statsd-client/statsd v0.0.0-20190501063751-9a7692639588
 	github.com/chai2010/webp v1.1.0
