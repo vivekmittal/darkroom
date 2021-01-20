@@ -2,6 +2,7 @@
 package router
 
 import (
+	"github.com/gojek/darkroom/pkg/middleware"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
@@ -22,6 +23,7 @@ import (
 // It also, adds a PathPrefix to catch all route if config.DataSource().PathPrefix is set
 func NewRouter(deps *service.Dependencies, registry *prometheus.Registry) *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
+	r.Use(middleware.Recovery())
 	r.Use(nrgorilla.Middleware(metrics.NewrelicApp()))
 
 	r.Methods(http.MethodGet).Path("/ping").Handler(handler.Ping())
