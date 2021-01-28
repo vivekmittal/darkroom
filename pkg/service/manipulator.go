@@ -65,10 +65,6 @@ func (m *manipulator) Process(spec processSpec) ([]byte, error) {
 	t := time.Now()
 	data, f, err := m.processor.Decode(spec.ImageData)
 
-	if data.Bounds().Dx() > 800 {
-		params = joinParams(params, map[string]string{"w": "800"})
-	}
-
 	if err != nil {
 		return nil, err
 	}
@@ -128,7 +124,7 @@ func (m *manipulator) Process(spec processSpec) ([]byte, error) {
 	}
 
 	t = time.Now()
-	src, err := m.processor.EncodeWithSize(data, f, len(spec.ImageData))
+	src, err := m.processor.Encode(data, f)
 	if err == nil {
 		m.metricService.TrackDuration(encodeDurationKey, t, spec.ImageData)
 	}

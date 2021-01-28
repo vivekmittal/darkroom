@@ -3,6 +3,7 @@ package native
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"github.com/chai2010/webp"
 	"github.com/gojek/darkroom/pkg/processor"
 	"image"
@@ -19,12 +20,12 @@ var compressionConfigs = []struct {
 	sizeLevel int
 	quality   int
 }{
-	{sizeLevel: 500 * KiloBytes, quality: 100},
-	{sizeLevel: 1 * MegaBytes, quality: 90},
+	{sizeLevel: 500 * KiloBytes, quality: 75},
+	{sizeLevel: 1 * MegaBytes, quality: 75},
 	{sizeLevel: 5 * MegaBytes, quality: 75},
-	{sizeLevel: 10 * MegaBytes, quality: 50},
-	{sizeLevel: 100 * MegaBytes, quality: 40},
-	{sizeLevel: 1000 * MegaBytes, quality: 25},
+	{sizeLevel: 10 * MegaBytes, quality: 75},
+	{sizeLevel: 100 * MegaBytes, quality: 75},
+	{sizeLevel: 1000 * MegaBytes, quality: 75},
 }
 
 // Encoder is an interface to Encode image and return the encoded byte array or error
@@ -78,6 +79,7 @@ func (e *JpegEncoder) EncodeWithSize(img image.Image, size int) ([]byte, error) 
 		}
 	}
 
+	fmt.Println("Compressing with: ", quality)
 	err := jpeg.Encode(buff, img, &jpeg.Options{Quality: quality})
 	return buff.Bytes(), err
 }
